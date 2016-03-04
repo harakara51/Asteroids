@@ -1,7 +1,7 @@
 onload = function() {
 	startGame();
-	mySound2.play(); 
-	mySound2.loop(); 
+	mySound2.play();
+
 	// document.querySelector("body").addEventListener("mousemove", myFunction);
 	addEventListener("keypress", getKeys);
 
@@ -18,39 +18,19 @@ function startGame() {
 	mySound2 = new sound("audio/Asteroids.mp3");
 	myGamePiece1 = new component(40, 45, "img/playerShip1.png", 0, 70, "image");
 	myShip = new component(20, 20, "img/asteroids4.png", 0, 70, "image");
-	myScore = new component("30px", "Consolas", "red", 280, 40, "text");
+	myScore = new component("30px", "Consolas", "red", 380, 40, "text");
+	myKills = new component("30px", "Consolas", "red", 180, 40, "text");
 	myObstacles = [];
 	myAmmo = [];
-	counter = 0;
+	kills = 0;
 	q = false;
+	gameStatus = "Menu";
+	createHighScores =true;
+	totalScore =0;
 
 }
 
-var myGameArea = {
 
-	sprite: document.createElement("div"),
-
-	canvas: document.createElement("canvas"),
-	start: function() {
-
-		this.canvas.width = 640;
-		this.canvas.height = 480;
-		this.canvas.style.background = "black";
-		this.context = this.canvas.getContext("2d");
-		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-		this.frameNo = 0;
-		this.interval = setInterval(updateGameArea, 20);
-	},
-
-	clear: function() {
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	},
-	stop: function() {
-		clearInterval(this.interval);
-
-	}
-
-}
 
 function everyinterval(n) {
 	if ((myGameArea.frameNo / n) % 1 == 0) {
@@ -62,133 +42,94 @@ function everyinterval(n) {
 
 function updateGameArea() {
 
- 
-	myGameArea.clear();
-	myScore.text = "SCORE: " + myGameArea.frameNo;
-	myScore.update();
-	myScore.text = "SCORE: " + myGameArea.frameNo;
-	myScore.update();
-	myGamePiece1.update();
-	mySpriteMovement();
-	playtheme(); 
-	makeObstacles();
-	// myGamePiece1.image.src = "img/playerShip2.png";
+	 if (gameStatus === "playing") {
 
-	// if (q) {
-	if (myAmmo.length > 0) {
-		for (var i = 0; i < myAmmo.length; i++) {
-			console.log("in myAmmo and q and bullet obj is :" + myAmmo + "counter is: " + counter);
-			myAmmo[i].speedX = 3;
-			myAmmo[i].update();
-			myAmmo[i].newPos();	
-		}
-	}
-}
+		 calculateScore ();
+		myGameArea.clear();
+		myScore.text = "SCORE: " + totalScore;
+		myScore.update();
+		myKills.text ="Kills " + kills;
+		myKills.update();
+		
+		myGamePiece1.update();
+		mySpriteMovement();
+	
+		makeObstacles();
+		// myGamePiece1.image.src = "img/playerShip2.png";
 
-function makeObstacles() {
-	var x, y, height, width;
-	for (var i = 0; i < myObstacles.length; i += 1) {
-		if (myGamePiece1.crashWith(myObstacles[i])) {
-			myGamePiece1.image.src = "img/explosionBig.jpg";
-			myGameArea.stop();
-			mySound2.stop();
-			return;
-		}
-	}
-
-	for (var i  = 0; i < myAmmo.length; i += 1) {
-
-		{
-			for (var j= 0; j < myObstacles.length; j += 1) {
-				if (myAmmo[i].crashWith(myObstacles[j])) {
-					myObstacles[i].image.src = "img/explosionBig.jpg";
-
-					myObstacles.splice(j, 1);
-					myAmmo.splice(i, 1);
-					mySound1.play();
-					// 	myObstacles[i].speedX = 0;
-					// myObstacles[i].x =0;
-					// myObstacles[i].y =0;
-					return;
-				}
+		if (myAmmo.length > 0) {
+			for (var i = 0; i < myAmmo.length; i++) {
+				
+				myAmmo[i].speedX = 3;
+				myAmmo[i].update();
+				myAmmo[i].newPos();
 			}
 		}
-	}
 
-	myGameArea.frameNo += 1;
-	if (myGameArea.frameNo == 1 || everyinterval(150)) {
-		x = myGameArea.canvas.width;
-		y = Math.random() * myGameArea.canvas.height;
-		height = Math.random() * (myGameArea.canvas.height / 3);
-		width = Math.random() * (myGameArea.canvas.width / 3);
-		console.log(y);
-		myObstacles.push(new component(width, height, "img/asteroids4.png", x, y, "image"));
-	}
-	for (i = 0; i < myObstacles.length; i += 1) {
-		myObstacles[i].x += Math.random() * (-3);
-		myObstacles[i].update();
-		myObstacles[i].newPos();
-	}
+	 }
+	 else if (gameStatus === "highscores") {
+		 myGameArea.clear();
+			
+	 }
+	 
+	 else if (gameStatus === "submitHighscores") {
+
+		 myGameArea.clear();
+		 var personName = prompt("Please enter your name") || "AS";
+		console.log(personName);
+		gameStatus = "Menu";
+	 }
+	 
+	 
+	 else {
+		 myGameArea.clear();
+		 makeObstacles();
+	 	menu();
+	 }
 }
 
-function getKeys(e) {
-
-	console.log(e.charCode);
-	if (e.charCode === 100) {
-		
-		
+function getData(method,url,callback, object) {
 	
-		myGamePiece1.speedX += 0.5;
-		if (myGamePiece1.speedX > 2) {
-			myGamePiece1.speedX = 2;
-		}
+	console.log(url);
+		var fullURL ="http://localhost:8080/Asteroids/rest/" + url;
+		console.log("fullurl inside getData is " +fullURL);
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, fullURL);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status < 400) {
 
-	} else if (e.charCode === 97) {
+				callback(JSON.parse(xhr.responseText));
+			}
+		};
+		if (object) {
+			console.log("Jus before sendingobject date attribute value :" +object.datemeditated + " time attribute " + object.timemeditated);
+	        xhr.send(JSON.stringify(object));
+	    } else {
+	        xhr.send(null);
+	    }
+	};
+	
+	
+function sendScoreToDB() {
+	
+	var scoresObj = {};
+	 scoresObj.name = "AS";
+	 scoresObj.score = totalScore;
+	 scoresObj.kills= kills;
+	 var method ="POST";
+	 var urlcode ="newScore";
+	 console.log("score: " + scoresObj.score + "kills : " + scoresObj.kills );
+	 getData(method,urlcode,callback, scoresObj);
+	
+}	
 
 
-		myGamePiece1.speedX -= 0.5;
-		if (myGamePiece1.speedX < -2) {
-			myGamePiece1.speedX = -2;
-		}
-	} else if (e.charCode === 119) {
-		myGamePiece1.speedY -= 0.5;
-		// myGamePiece1.image.src = "img/playerShip2.png";
-		mySpriteMovement();
-		if (myGamePiece1.speedY < -2) {
-			myGamePiece1.speedY = -2;
-		}
-	} else if (e.charCode === 115) {
-		// myGamePiece1.image.src = "img/playerShip2.png";
-		myGamePiece1.speedY += 0.5;
-		if (myGamePiece1.speedY > 2) {
-			myGamePiece1.speedY = 2;
-		}
-
+var callback = function (data) {
+	
+	console.log("inside callback method of post");
+		
 	}
-
-	if (e.charCode === 32) {
-
-		var xAmmo = myGamePiece1.x;
-		console.log("creating bullet object");
-		myAmmo.push(new component2(10, 20, "img/Lasers/laserBlue02.png", xAmmo, myGamePiece1.y, "image"));
-		mySound.play();	
-		// mySound.stop();
-		q = true;
-	}
-	// else {
-	// 	// if (myGamePiece1.speedX>3)
-	// 	// {q
-	// 	// 	myGamePiece1.speedX ==3;
-	// 	// }
-	// }
-
-
-}
-
-function playtheme () {
-mySound2.play();	
-}
-
 
 function mySpriteMovement(e) {
 

@@ -44,7 +44,7 @@ public class myController
 
 	
 	@ResponseBody
-    @RequestMapping(path = "newLog", method = RequestMethod.POST)
+    @RequestMapping(path = "newScore", method = RequestMethod.POST)
     public Boolean createLog(@RequestBody String asteroid) {
         System.out.println("inside createLOG method " + asteroid);
 

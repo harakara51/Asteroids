@@ -16,14 +16,11 @@ function component(width, height, color, x, y, type) {
 		} else if (this.x > 640) {
 			this.x = 0;
 		}
-
 		if (this.y < 0) {
 			this.y = 480;
 		} else if (this.y > 640) {
 			this.y = 0;
 		}
-
-
 	}
 
 	this.update = function() {
@@ -143,9 +140,7 @@ function sound(src) {
     this.play = function(){
         this.sound.play();
     }
-    this.loop = function(){
-        this.sound.loop();
-    }
+  
     this.stop = function(){
         this.sound.pause();
     }
