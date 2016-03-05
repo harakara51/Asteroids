@@ -21,25 +21,33 @@ import data.asteroidDAO;
 @Controller
 public class myController
 {
+	
+	public static int counter;
 	@Autowired
 	asteroidDAO asteroidDAO;
 
 	@ResponseBody
 	@RequestMapping("ping")
+	
 	public String ping()
 	{
 
 		return "pong";
 	}
 
+	
 	@ResponseBody
-	@RequestMapping("meditate")
-
+	@RequestMapping("highScores")
+	
 	public List<Asteroid> getALLdays()
 
-	{
-		System.out.println("inside controller meditate");
+	{ 
+		
+		counter++;
+		System.out.println(counter);
+		System.out.println("inside controller A");
 		return asteroidDAO.getAllScores();
+		
 	}
 
 	

@@ -51,6 +51,6 @@ function changeGameStatus(e)  {
 	{
     	console.log(x, y);
 		console.log("inside highscores textbox")
-		gameStatus = "highscores";
+		gameStatus = "highScores";
 	}
 }

@@ -26,7 +26,9 @@ function startGame() {
 	q = false;
 	gameStatus = "Menu";
 	createHighScores =true;
+	createHighScores2 =true;
 	totalScore =0;
+	getDataFromDB = []; 
 
 }
 
@@ -67,9 +69,22 @@ function updateGameArea() {
 		}
 
 	 }
-	 else if (gameStatus === "highscores") {
+	 else if (gameStatus === "highScores") {
+		
+		 if(createHighScores)
+	{	 
+			 createHighScores =false;
+			 console.log(createHighScores);
 		 myGameArea.clear();
-			
+		 var method ="GET";
+			var urlcode ="highScores";
+			console.log(urlcode + "inside gameStatus if logic");
+		
+			getData(method,urlcode,createHighScoresFromDB) ;
+			createHighScoresFromDB();
+			 createHighScores2 =false;
+	}	
+
 	 }
 	 
 	 else if (gameStatus === "submitHighscores") {
@@ -85,10 +100,11 @@ function updateGameArea() {
 		 myGameArea.clear();
 		 makeObstacles();
 	 	menu();
+	 	createHighScores =true;
 	 }
 }
 
-function getData(method,url,callback, object) {
+function getData(method,url,getData, object) {
 	
 	console.log(url);
 		var fullURL ="http://localhost:8080/Asteroids/rest/" + url;
@@ -99,7 +115,11 @@ function getData(method,url,callback, object) {
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status < 400) {
 
-				callback(JSON.parse(xhr.responseText));
+				getDataFromDB =JSON.parse(xhr.responseText);
+				console.log("inside getData :" +getDataFromDB)
+				createHighScoresFromDB(getDataFromDB);
+				
+				
 			}
 		};
 		if (object) {
@@ -120,16 +140,47 @@ function sendScoreToDB() {
 	 var method ="POST";
 	 var urlcode ="newScore";
 	 console.log("score: " + scoresObj.score + "kills : " + scoresObj.kills );
-	 getData(method,urlcode,callback, scoresObj);
+	 getData(method,urlcode,callback3, scoresObj);
 	
 }	
 
 
-var callback = function (data) {
+var createHighScoresFromDB =function (data) {
+	 if(createHighScores2)
+		{
+		
+	console.log("inside create scores from DB " + data  );
+	var tempY =20;
+	highScorePage= new component("30px", "Consolas", "white", 250, 40, "text");
+	highScoreTitle = new component("20px", "Consolas", "white", 175, 100, "text");
+	highScorePage.text=" High Score";
+	highScoreTitle.text=" NAME          SCORE         KILLS";
+
+
+	highScorePage.update();
+	highScoreTitle.update();
+	console.log("1st person" + data[0] );
+	for(var i =0; i < data.length ; i++)
+		{
+		highScoreX= new component("15px", "Consolas", "white", 175, (100 + tempY), "text");
+		console.log("in loop to create scores" + i);
+		highScoreX.text="      " + data[i].name + "                         "+ data[i].score + " " + "               " + data[i].kills;
+		highScoreX.update();
+		tempY= tempY+20;
+		}
+	
+
+
+	
+		}
+	
+};
+
+var callback3 = function (data) {
 	
 	console.log("inside callback method of post");
 		
-	}
+	};
 
 function mySpriteMovement(e) {
 

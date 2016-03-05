@@ -9,6 +9,7 @@ function makeObstacles() {
 //			myGameArea.stop();
 			mySound2.stop();
 			gameStatus ="submitHighscores";
+			
 			sendScoreToDB();
 			return;
 		}

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Asteroid;
 
 
+
 @Transactional
 public class asteroidDAO {
 	@PersistenceContext
@@ -21,8 +22,11 @@ public class asteroidDAO {
 
 	public List<Asteroid>  getAllScores () {
 	 
-		List<Asteroid> allobj = (List<Asteroid>)em.createNamedQuery("getalldays").getResultList();
+		List<Asteroid> allobj = (List<Asteroid>)em.createNamedQuery("getALL").getResultList();
 	
+		System.out.println(allobj.size());
+//		TypedQuery<Asteroids> query =
+//			      em.createNamedQuery("Country.findAll", Asteroid.class);
 		return allobj;
 	}
 	
