@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,20 @@ public class myController
 		counter++;
 		System.out.println(counter);
 		System.out.println("inside controller A");
-		return asteroidDAO.getAllScores();
+		
+		List<Asteroid> top10 = new ArrayList<>();
+//		
+		List<Asteroid>allScores = asteroidDAO.getAllScores();
+//		
+//		
+		for (int i =0; i <11; i ++)
+		{
+
+			top10.add(allScores.get(i));
+		}
+		System.out.println(asteroidDAO.getAllScores());
+		
+		return top10;
 		
 	}
 

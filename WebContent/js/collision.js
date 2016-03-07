@@ -1,16 +1,15 @@
 function makeObstacles() {
-	
+//	console.log("in makeObstacles");
 	if (gameStatus==="playing")
 		{
 	var x, y, height, width;
 	for (var i = 0; i < myObstacles.length; i += 1) {
 		if (myGamePiece1.crashWith(myObstacles[i])) {
 			myGamePiece1.image.src = "img/explosionBig.jpg";
-//			myGameArea.stop();
+			myObstacles =[];
+			console.log("plane crashed, game over");
 			mySound2.stop();
 			gameStatus ="submitHighscores";
-			
-			sendScoreToDB();
 			return;
 		}
 	}

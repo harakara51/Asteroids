@@ -1,8 +1,16 @@
 body {
+	background-image: url("space3.jpg");
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color:white;
 
-	color:red;
+	
 }
-
+#header {
+text-align:center;	
+	
+}
 #Canvas {
 
 
