@@ -13,6 +13,7 @@ function menu () {
 	startGame.update();
 	highScores.update();
 // console.log(myTitle);
+	
 
 }
 
